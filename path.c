@@ -350,9 +350,10 @@ static void update_common_dir(struct strbuf *buf, int git_dir_len,
 			      const char *common_dir)
 {
 	char *base = buf->buf + git_dir_len, *base2 = NULL;
+	size_t baselen;
 
-	if (ends_with(base, ".lock"))
-		base = base2 = xstrndup(base, strlen(base) - 5);
+	if (strip_suffix(base, ".lock", &baselen))
+		base = base2 = xstrndup(base, baselen);
 
 	init_common_trie();
 	if (trie_find(&common_trie, base, check_common, NULL) > 0)
